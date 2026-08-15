@@ -3,15 +3,17 @@ import { fetchReadmePreview } from "@/github/githubApi";
 import { relativeTime, shortDate } from "@/github/format";
 import type { GithubProject } from "@/github/types";
 import { AppHeader, GhostBtn, LeaderRow, StatusChip, Tag, type AppProps } from "@/os/ui";
-
 const README_PREVIEW_CHARS = 480;
-
 export default function GithubProjectApp({ payload }: AppProps) {
-  const p = (payload as { project?: GithubProject } | undefined)?.project;
-
+  const p = (
+    payload as
+      | {
+          project?: GithubProject;
+        }
+      | undefined
+  )?.project;
   const [readme, setReadme] = useState<string | null>(null);
   const [readmeState, setReadmeState] = useState<"loading" | "ready" | "none">("loading");
-
   useEffect(() => {
     if (!p) return;
     let cancelled = false;
@@ -29,11 +31,9 @@ export default function GithubProjectApp({ payload }: AppProps) {
       cancelled = true;
     };
   }, [p]);
-
   if (!p) {
     return <div className="p-6 text-sm text-muted">No project file mounted.</div>;
   }
-
   return (
     <div className="flex h-full flex-col">
       <AppHeader
@@ -42,7 +42,6 @@ export default function GithubProjectApp({ payload }: AppProps) {
       />
 
       <div className="os-scroll min-h-0 flex-1 overflow-auto">
-        {/* Hero */}
         <div className="border-b border-edge p-5">
           <div className="micro mb-1 text-accent">// GITHUB REPOSITORY · {p.owner}</div>
           <h2 className="font-mono text-2xl font-bold tracking-tight text-ink">{p.title}</h2>
@@ -56,16 +55,13 @@ export default function GithubProjectApp({ payload }: AppProps) {
           )}
         </div>
 
-        {/* Live stats */}
         <div className="grid grid-cols-3 divide-x divide-edge border-b border-edge">
           <Metric label="STARS" value={`★ ${p.stars}`} />
           <Metric label="FORKS" value={`⑂ ${p.forks}`} />
           <Metric label="OPEN ISSUES" value={String(p.openIssues)} />
         </div>
 
-        {/* Body */}
         <div className="space-y-5 p-5">
-          {/* README preview */}
           <section>
             <div className="micro mb-2 text-faint">▸ README</div>
             {readmeState === "loading" && <p className="tiny text-faint">Fetching README from GitHub…</p>}
@@ -111,11 +107,8 @@ export default function GithubProjectApp({ payload }: AppProps) {
           )}
         </div>
 
-        {/* Footer actions */}
         <div className="flex flex-wrap items-center gap-2 border-t border-edge bg-panel/50 p-3">
-          <GhostBtn onClick={() => window.open(p.githubUrl, "_blank", "noopener,noreferrer")}>
-            ⤓ source code
-          </GhostBtn>
+          <GhostBtn onClick={() => window.open(p.githubUrl, "_blank", "noopener,noreferrer")}>⤓ source code</GhostBtn>
           {p.homepageUrl && (
             <GhostBtn onClick={() => window.open(p.homepageUrl!, "_blank", "noopener,noreferrer")}>
               ↗ live demo
@@ -127,7 +120,6 @@ export default function GithubProjectApp({ payload }: AppProps) {
     </div>
   );
 }
-
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="px-3 py-3 text-center">
@@ -136,14 +128,12 @@ function Metric({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-/** Strips the noisiest markdown syntax so a raw README reads reasonably as plain text. */
 function cleanReadme(text: string): string {
   return text
-    .replace(/^---[\s\S]*?---\s*/m, "") // front-matter
+    .replace(/^---[\s\S]*?---\s*/m, "")
     .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/!\[[^\]]*]\([^)]*\)/g, "") // images
-    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1") // links → text
+    .replace(/!\[[^\]]*]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
     .replace(/^#{1,6}\s*/gm, "")
     .replace(/[*_`]{1,3}/g, "")
     .trim();

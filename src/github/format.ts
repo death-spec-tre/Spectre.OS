@@ -3,7 +3,6 @@ export function relativeTime(iso: string): string {
   if (Number.isNaN(then)) return "unknown";
   const diffMs = Date.now() - then;
   const sec = Math.max(0, Math.round(diffMs / 1000));
-
   if (sec < 45) return "just now";
   const min = Math.round(sec / 60);
   if (min < 60) return `${min} minute${min === 1 ? "" : "s"} ago`;
@@ -16,7 +15,6 @@ export function relativeTime(iso: string): string {
   const year = Math.round(month / 12);
   return `${year} year${year === 1 ? "" : "s"} ago`;
 }
-
 export function shortDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "—";

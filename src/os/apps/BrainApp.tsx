@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { skillEdges, skills, type Skill } from "@/data/portfolio";
 import { AppHeader, type AppProps } from "@/os/ui";
 import { cn } from "@/utils/cn";
-
 interface PNode extends Skill {
   x: number;
   y: number;
@@ -11,7 +10,6 @@ interface PNode extends Skill {
   ax: number;
   ay: number;
 }
-
 function initNodes(w: number, h: number): PNode[] {
   const cx = w / 2;
   const cy = h / 2;
@@ -29,13 +27,18 @@ function initNodes(w: number, h: number): PNode[] {
     };
   });
 }
-
-function step(nodes: PNode[], size: { w: number; h: number }, dragId: string | null): PNode[] {
+function step(
+  nodes: PNode[],
+  size: {
+    w: number;
+    h: number;
+  },
+  dragId: string | null,
+): PNode[] {
   const cx = size.w / 2;
   const cy = size.h / 2;
   const next = nodes.map((n) => ({ ...n, ax: 0, ay: 0 }));
   const idx = new Map(next.map((n, i) => [n.id, i]));
-
   for (let i = 0; i < next.length; i++) {
     for (let j = i + 1; j < next.length; j++) {
       let dx = next[i].x - next[j].x;
@@ -52,7 +55,6 @@ function step(nodes: PNode[], size: { w: number; h: number }, dragId: string | n
       next[j].ay -= fy;
     }
   }
-
   for (const [a, b] of skillEdges) {
     const ia = idx.get(a);
     const ib = idx.get(b);
@@ -71,7 +73,6 @@ function step(nodes: PNode[], size: { w: number; h: number }, dragId: string | n
     nb.ax -= fx;
     nb.ay -= fy;
   }
-
   const pad = 44;
   for (const n of next) {
     if (dragId && n.id === dragId) {
@@ -96,14 +97,12 @@ function step(nodes: PNode[], size: { w: number; h: number }, dragId: string | n
   }
   return next;
 }
-
 const GROUP_LABEL: Record<Skill["group"], string> = {
   core: "CORE",
   jvm: "JVM / MINECRAFT",
   web: "WEB",
   infra: "INFRA / TOOLS",
 };
-
 export default function BrainApp(_: AppProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 560, h: 380 });
@@ -112,7 +111,6 @@ export default function BrainApp(_: AppProps) {
   const [sel, setSel] = useState<string | null>("java");
   const dragRef = useRef<string | null>(null);
   const moveRef = useRef(false);
-
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -123,7 +121,6 @@ export default function BrainApp(_: AppProps) {
     setSize({ w: el.clientWidth, h: el.clientHeight });
     return () => ro.disconnect();
   }, []);
-
   useEffect(() => {
     let raf = 0;
     const tick = () => {
@@ -133,7 +130,6 @@ export default function BrainApp(_: AppProps) {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [size]);
-
   const focusId = hover ?? sel;
   const neighbors = new Set<string>();
   if (focusId) {
@@ -142,12 +138,10 @@ export default function BrainApp(_: AppProps) {
       if (b === focusId) neighbors.add(a);
     }
   }
-
   const localPos = (clientX: number, clientY: number) => {
     const r = wrapRef.current!.getBoundingClientRect();
     return { x: clientX - r.left, y: clientY - r.top };
   };
-
   const onNodeDown = (e: React.PointerEvent, id: string) => {
     e.stopPropagation();
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
@@ -155,7 +149,6 @@ export default function BrainApp(_: AppProps) {
     dragRef.current = id;
     const { x, y } = localPos(e.clientX, e.clientY);
     setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, x, y, vx: 0, vy: 0 } : n)));
-
     const move = (ev: PointerEvent) => {
       const { x: nx, y: ny } = localPos(ev.clientX, ev.clientY);
       moveRef.current = true;
@@ -170,17 +163,18 @@ export default function BrainApp(_: AppProps) {
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
   };
-
   const selected = nodes.find((n) => n.id === sel) ?? null;
-
   return (
     <div className="flex h-full flex-col">
       <AppHeader
         path="/SYS/BRAIN/knowledge.graph"
-        right={<span className="micro text-faint">{skills.length} nodes · {skillEdges.length} edges</span>}
+        right={
+          <span className="micro text-faint">
+            {skills.length} nodes · {skillEdges.length} edges
+          </span>
+        }
       />
       <div className="flex min-h-0 flex-1">
-        {/* Graph */}
         <div
           ref={wrapRef}
           className="relative min-w-0 flex-1 select-none overflow-hidden desktop-grid"
@@ -226,22 +220,14 @@ export default function BrainApp(_: AppProps) {
                       ? "border-accent bg-accent/10"
                       : isNeighbor
                         ? "border-edge3 bg-panel2"
-                        : "border-edge bg-panel/80"
+                        : "border-edge bg-panel/80",
                   )}
-                  style={
-                    isFocus ? { boxShadow: "0 0 0 3px rgba(124,255,178,0.12)" } : undefined
-                  }
+                  style={isFocus ? { boxShadow: "0 0 0 3px rgba(124,255,178,0.12)" } : undefined}
                 />
                 <span
                   className={cn(
                     "relative block whitespace-nowrap",
-                    isFocus
-                      ? "text-accent"
-                      : isNeighbor
-                        ? "text-ink"
-                        : hover
-                          ? "text-faint"
-                          : "text-muted"
+                    isFocus ? "text-accent" : isNeighbor ? "text-ink" : hover ? "text-faint" : "text-muted",
                   )}
                 >
                   {n.label}
@@ -255,7 +241,6 @@ export default function BrainApp(_: AppProps) {
           </div>
         </div>
 
-        {/* Detail panel */}
         <aside className="w-[132px] shrink-0 overflow-auto border-l border-edge bg-panel/40 p-2.5 sm:w-60 sm:p-4 os-scroll">
           {selected ? (
             <div className="fade-in">
@@ -269,10 +254,7 @@ export default function BrainApp(_: AppProps) {
                   <span className="text-accent">{selected.level}%</span>
                 </div>
                 <div className="h-1.5 w-full overflow-hidden bg-panel3">
-                  <div
-                    className="h-full bg-accent transition-all"
-                    style={{ width: `${selected.level}%` }}
-                  />
+                  <div className="h-full bg-accent transition-all" style={{ width: `${selected.level}%` }} />
                 </div>
               </div>
 
@@ -293,7 +275,7 @@ export default function BrainApp(_: AppProps) {
                         key={nid}
                         type="button"
                         onClick={() => setSel(nid)}
-                        className="no-tap border border-edge2 bg-panel px-1.5 py-0.5 text-[10px] text-muted hover:border-accent/50 hover:text-accent"
+                        className="no-tap border border-edge2 bg-panel px-1.5 py-0.5 text-[10px] text-muted transition-colors hover:border-accent/50 hover:text-accent"
                       >
                         {nn.label}
                       </button>
@@ -310,7 +292,6 @@ export default function BrainApp(_: AppProps) {
     </div>
   );
 }
-
 function LeaderRowLite({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex items-baseline gap-2">

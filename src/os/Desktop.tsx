@@ -4,26 +4,25 @@ import Window from "./Window";
 import { renderApp } from "./apps/registry";
 import Notifications from "./Notifications";
 import SystemShell from "./SystemShell";
-
+import BackgroundLayer from "./BackgroundLayer";
 export default function Desktop() {
   const os = useOS();
-
   useEffect(() => {
     const t = window.setTimeout(
       () =>
         os.notify(
           "SPECTRE.OS",
           "Session started. Select a module from the shell — or open TERMINAL and type 'help'.",
-          "accent"
+          "accent",
         ),
-      1400
+      1400,
     );
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
-    <div className="os-skin vignette desktop-grid relative h-full w-full overflow-hidden">
+    <div className="os-skin vignette desktop-grid desktop-live relative h-full w-full overflow-hidden">
+      <BackgroundLayer />
+      <div className="ambient-glow" aria-hidden="true" />
       <SystemShell />
 
       {os.windows.map((w) => (

@@ -1,11 +1,6 @@
 import { GITHUB_RAW_BASE } from "./config";
 import type { SpectreConfig } from "./types";
-
-export async function fetchSpectreConfig(
-  owner: string,
-  repo: string,
-  branch: string
-): Promise<SpectreConfig | null> {
+export async function fetchSpectreConfig(owner: string, repo: string, branch: string): Promise<SpectreConfig | null> {
   try {
     const res = await fetch(`${GITHUB_RAW_BASE}/${owner}/${repo}/${branch}/.spectre.yml`, {
       cache: "no-store",
@@ -17,17 +12,10 @@ export async function fetchSpectreConfig(
     return null;
   }
 }
-
-/**
- * Not a general-purpose YAML parser — .spectre.yml is a flat, fixed schema
- * (scalars, one-level string lists, `>` block scalars), so this stays
- * dependency-free instead of pulling in a full YAML library for six keys.
- */
 export function parseSpectreYaml(text: string): SpectreConfig {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   const out: Record<string, unknown> = {};
   let i = 0;
-
   while (i < lines.length) {
     const stripped = lines[i].replace(/#.*$/, "");
     if (!stripped.trim()) {
@@ -41,7 +29,6 @@ export function parseSpectreYaml(text: string): SpectreConfig {
     }
     const key = match[1];
     const rest = match[2].trim();
-
     if (rest === ">" || rest === ">-" || rest === "|" || rest === "|-") {
       i++;
       const parts: string[] = [];
@@ -52,26 +39,27 @@ export function parseSpectreYaml(text: string): SpectreConfig {
       out[key] = parts.join(" ").trim();
       continue;
     }
-
     if (rest === "") {
-      // block list on following lines
       const items: string[] = [];
       let j = i + 1;
       while (j < lines.length && /^\s*-\s+/.test(lines[j])) {
-        items.push(lines[j].replace(/^\s*-\s+/, "").trim().replace(/^["']|["']$/g, ""));
+        items.push(
+          lines[j]
+            .replace(/^\s*-\s+/, "")
+            .trim()
+            .replace(/^["']|["']$/g, ""),
+        );
         j++;
       }
       out[key] = items;
       i = items.length ? j : i + 1;
       continue;
     }
-
     const unquoted = rest.replace(/^["']|["']$/g, "");
     if (unquoted === "true") out[key] = true;
     else if (unquoted === "false") out[key] = false;
     else out[key] = unquoted;
     i++;
   }
-
   return out as SpectreConfig;
 }

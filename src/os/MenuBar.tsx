@@ -1,32 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { APP_META } from "./apps/meta";
 import { useOS } from "./OSContext";
-
 const LAUNCHER_APPS = ["work", "brain", "lab", "notes", "system", "contact", "terminal", "about"];
-
 export default function MenuBar() {
   const os = useOS();
   const [now, setNow] = useState(new Date());
   const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
-
   const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
   const date = now.toLocaleDateString([], { weekday: "short", day: "2-digit", month: "short" }).toUpperCase();
-
   return (
     <div
       ref={ref}
-      className="absolute left-0 right-0 top-0 z-[100000] flex h-8 items-center gap-2 border-b border-edge bg-panel/85 px-2 backdrop-blur-sm"
+      className="absolute left-0 right-0 top-0 z-[100000] flex h-8 items-center gap-2 border-b border-edge bg-panel/90 px-2 backdrop-blur-md"
     >
       <button
         type="button"
         onClick={() => setMenuOpen((o) => !o)}
-        className="no-tap flex items-center gap-1.5 px-1 text-ink hover:text-accent"
+        className="no-tap flex items-center gap-1.5 px-1 text-ink transition-colors hover:text-accent"
       >
         <span className="text-accent">◆</span>
         <span className="font-mono text-[12px] font-bold tracking-tight">SPECTRE.OS</span>
@@ -58,7 +53,7 @@ export default function MenuBar() {
                       os.openApp(id);
                       setMenuOpen(false);
                     }}
-                    className="no-tap flex items-center gap-2.5 px-2 py-1.5 text-left text-[12px] text-muted hover:bg-accent/10 hover:text-accent"
+                    className="no-tap flex items-center gap-2.5 px-2 py-1.5 text-left text-[12px] text-muted transition-colors hover:bg-accent/10 hover:text-accent"
                   >
                     <span className="text-[11px]">{m.glyph}</span>
                     <span className="flex-1">{m.title}</span>
@@ -74,7 +69,7 @@ export default function MenuBar() {
                   os.notify("SYSTEM", "Shut down cancelled. The OS refuses to sleep.", "warn");
                   setMenuOpen(false);
                 }}
-                className="no-tap w-full px-2 py-1.5 text-left text-[12px] text-faint hover:text-danger"
+                className="no-tap w-full px-2 py-1.5 text-left text-[12px] text-faint transition-colors hover:text-danger"
               >
                 ⏻ shut down…
               </button>

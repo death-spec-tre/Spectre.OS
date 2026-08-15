@@ -19,16 +19,15 @@
   --color-faint: #64707d;
   --color-dim: #363d47;
 
-  --color-accent: #dce2ea;
-  --color-accent2: #ffffff;
-  --color-accentdim: #23262d;
+  --color-accent: #45d3f5;
+  --color-accent2: #bdf3ff;
+  --color-accentdim: #0d2630;
 
   --color-warn: #f5b14c;
   --color-danger: #ff6b6b;
   --color-info: #86bcff;
 
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -42,10 +41,20 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  input, textarea, [contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
   }
   ::selection {
     background: rgba(255,255,255,0.85);
     color: #050608;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 }
 
@@ -82,6 +91,42 @@
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.025), transparent 28%),
     linear-gradient(180deg, #06070a 0%, #030406 100%);
 }
+
+/* Background media (video/image) sits at z:-1 — painted above this
+   container's own background above, but behind every normal-flow child
+   (ambient glow, grid lines, the shell, windows). Swap the source in
+   src/config/background.ts; nothing here needs to change. */
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bg-layer-media {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.85) brightness(0.62) contrast(1.06);
+  transform: scale(1.02);
+}
+.bg-layer-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(3,4,6,0.28), rgba(3,4,6,0.72) 72%),
+    linear-gradient(180deg, rgba(3,4,6,0.62) 0%, rgba(3,4,6,0.4) 30%, rgba(3,4,6,0.46) 70%, rgba(3,4,6,0.82) 100%);
+}
+.bg-layer-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 .desktop-grid::before {
   content: "";
   position: absolute;
@@ -101,6 +146,61 @@
   background: linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 160px 160px;
   opacity: 0.08;
+}
+
+@keyframes ambientGlowA {
+  0%, 100% { transform: translate3d(-4%, -3%, 0) scale(1); }
+  50% { transform: translate3d(3%, 4%, 0) scale(1.12); }
+}
+@keyframes ambientGlowB {
+  0%, 100% { transform: translate3d(3%, 4%, 0) scale(1.08); }
+  50% { transform: translate3d(-5%, -2%, 0) scale(1); }
+}
+@keyframes ambientGridDrift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-40px, -40px, 0); }
+}
+
+.desktop-live { isolation: isolate; }
+.desktop-live .ambient-glow {
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(70px);
+}
+.desktop-live .ambient-glow::before,
+.desktop-live .ambient-glow::after {
+  content: "";
+  position: absolute;
+  width: 55%;
+  height: 55%;
+  border-radius: 9999px;
+  opacity: 0.16;
+}
+.desktop-live .ambient-glow::before {
+  top: 6%;
+  left: 4%;
+  background: radial-gradient(circle, var(--color-accent), transparent 70%);
+  animation: ambientGlowA 26s ease-in-out infinite;
+}
+.desktop-live .ambient-glow::after {
+  bottom: 2%;
+  right: 6%;
+  background: radial-gradient(circle, var(--color-accent), transparent 70%);
+  animation: ambientGlowB 32s ease-in-out infinite;
+}
+.desktop-live.desktop-grid::before {
+  inset: -40px;
+  animation: ambientGridDrift 50s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-live .ambient-glow::before,
+  .desktop-live .ambient-glow::after,
+  .desktop-live.desktop-grid::before {
+    animation: none;
+  }
 }
 .vignette::after {
   content: "";
@@ -144,11 +244,53 @@
 }
 .win-in { animation: winIn 0.18s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
 
+@keyframes winOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+}
+.win-out { animation: winOut 0.13s cubic-bezier(0.4, 0, 1, 1) both; }
+
+@keyframes winMinimize {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85) translateY(40px);
+  }
+}
+.win-minimize { animation: winMinimize 0.16s cubic-bezier(0.4, 0, 1, 1) both; }
+
 @keyframes toastIn {
   from { opacity: 0; transform: translateX(18px); }
   to { opacity: 1; transform: translateX(0); }
 }
 .toast-in { animation: toastIn 0.28s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); max-height: 120px; margin-bottom: 0; }
+  to { opacity: 0; transform: translateX(18px); }
+}
+.toast-out { animation: toastOut 0.16s cubic-bezier(0.4, 0, 1, 1) both; }
+
+@keyframes taskbarIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.taskbar-in { animation: taskbarIn 0.15s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .win-in, .win-out, .win-minimize, .toast-in, .toast-out, .taskbar-in {
+    animation-duration: 0.001s;
+  }
+}
 
 @keyframes pulseDot {
   0%, 100% { opacity: 1; }
@@ -187,7 +329,9 @@
 
 .shell-topbar {
   border-bottom: 1px solid rgba(255,255,255,0.12);
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+  background: linear-gradient(180deg, rgba(3,4,6,0.55), rgba(3,4,6,0.18));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .shell-topbar::after {
   content: "";
@@ -199,24 +343,11 @@
   background: rgba(255,255,255,0.05);
 }
 
-.shell-main-grid {
-  display: grid;
-  grid-template-columns: 210px minmax(0, 1fr) 530px;
-  gap: 36px;
-  min-height: calc(100% - 132px);
-}
-
-.shell-mark {
-  font-family: var(--font-sans);
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--color-ink);
-}
-
 .shell-icon-btn {
   color: var(--color-ink);
   background: transparent;
   border: none;
+  transition: color 150ms ease;
 }
 
 .shell-side-clip,
@@ -225,7 +356,9 @@
 .shell-stat-clip,
 .shell-appicon {
   border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(6, 7, 10, 0.48);
+  background: rgba(6, 7, 10, 0.66);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
 }
 .shell-side-clip {
@@ -252,7 +385,7 @@
 .shell-window-head,
 .shell-widget-head {
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008));
 }
 
 .shell-logo-wrap {
@@ -260,7 +393,6 @@
   text-align: center;
 }
 
-/* SVG SPECTRE mark — square, scales with viewport */
 .shell-mark-wrap {
   position: relative;
   width: clamp(120px, 18vw, 210px);
@@ -295,7 +427,9 @@
 
 .shell-bottombar {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(0deg, rgba(255, 255, 255, 0.014), rgba(255, 255, 255, 0));
+  background: linear-gradient(0deg, rgba(3,4,6,0.55), rgba(3,4,6,0.18));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .tiny {
@@ -324,7 +458,6 @@ input[type="text"]::-webkit-inner-spin-button {
   user-select: none;
 }
 
-/* Short viewports: keep the hero from crowding the top/bottom bars */
 @media (max-height: 800px) {
   .shell-mark-wrap {
     width: clamp(96px, 16vh, 160px);
@@ -346,7 +479,6 @@ input[type="text"]::-webkit-inner-spin-button {
   }
 }
 
-/* ---------- Mobile app dock ---------- */
 .shell-dock {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(180deg, rgba(6, 7, 10, 0.72), rgba(3, 4, 6, 0.96));
@@ -359,7 +491,6 @@ input[type="text"]::-webkit-inner-spin-button {
   display: none;
 }
 
-/* ---------- Narrow phones: shrink the decorative corner-cut frame ---------- */
 @media (max-width: 767px) {
   .os-frame::before {
     inset: 8px;

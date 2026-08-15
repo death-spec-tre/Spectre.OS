@@ -15,10 +15,16 @@ export interface GithubRepo {
   pushed_at: string;
   archived: boolean;
   default_branch: string;
-  owner: { login: string; html_url: string; avatar_url: string };
-  license: { name: string; spdx_id: string } | null;
+  owner: {
+    login: string;
+    html_url: string;
+    avatar_url: string;
+  };
+  license: {
+    name: string;
+    spdx_id: string;
+  } | null;
 }
-
 export interface SpectreConfig {
   portfolio?: boolean;
   title?: string;
@@ -29,9 +35,7 @@ export interface SpectreConfig {
   technologies?: string[];
   icon?: string;
 }
-
 export type GithubProjectStatus = "WIP" | "COMPLETED" | "ARCHIVED";
-
 export interface GithubProject {
   id: string;
   repoName: string;

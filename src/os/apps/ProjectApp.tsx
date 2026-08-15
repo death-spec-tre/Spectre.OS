@@ -1,18 +1,19 @@
 import { projectById } from "@/data/portfolio";
 import { useOS } from "@/os/OSContext";
 import { AppHeader, GhostBtn, StatusChip, Tag, type AppProps } from "@/os/ui";
-
 export default function ProjectApp({ payload }: AppProps) {
   const os = useOS();
-  const projectId = (payload as { projectId?: string } | undefined)?.projectId;
+  const projectId = (
+    payload as
+      | {
+          projectId?: string;
+        }
+      | undefined
+  )?.projectId;
   const p = projectId ? projectById(projectId) : undefined;
-
   if (!p) {
-    return (
-      <div className="p-6 text-sm text-muted">No project file mounted.</div>
-    );
+    return <div className="p-6 text-sm text-muted">No project file mounted.</div>;
   }
-
   return (
     <div className="flex h-full flex-col">
       <AppHeader
@@ -21,7 +22,6 @@ export default function ProjectApp({ payload }: AppProps) {
       />
 
       <div className="os-scroll min-h-0 flex-1 overflow-auto">
-        {/* Hero */}
         <div className="border-b border-edge p-5">
           <div className="micro mb-1 text-accent">// CASE STUDY · {p.folder}</div>
           <h2 className="font-mono text-2xl font-bold tracking-tight text-ink">{p.name}</h2>
@@ -33,7 +33,6 @@ export default function ProjectApp({ payload }: AppProps) {
           </div>
         </div>
 
-        {/* Metrics */}
         {p.metrics && (
           <div className="grid grid-cols-3 divide-x divide-edge border-b border-edge">
             {p.metrics.map((m) => (
@@ -45,7 +44,6 @@ export default function ProjectApp({ payload }: AppProps) {
           </div>
         )}
 
-        {/* Body */}
         <div className="space-y-5 p-5">
           <section>
             <div className="micro mb-2 text-faint">▸ OVERVIEW</div>
@@ -74,11 +72,8 @@ export default function ProjectApp({ payload }: AppProps) {
           </section>
         </div>
 
-        {/* Footer actions */}
         <div className="flex flex-wrap items-center gap-2 border-t border-edge bg-panel/50 p-3">
-          <GhostBtn onClick={() => os.notify("PROJECT", "Cloning repository...", "accent")}>
-            ⤓ clone source
-          </GhostBtn>
+          <GhostBtn onClick={() => os.notify("PROJECT", "Cloning repository...", "accent")}>⤓ clone source</GhostBtn>
           <GhostBtn onClick={() => os.openApp("contact")}>✉ discuss this</GhostBtn>
           <span className="micro ml-auto text-faint">EOF · {p.name}.case</span>
         </div>
@@ -86,7 +81,6 @@ export default function ProjectApp({ payload }: AppProps) {
     </div>
   );
 }
-
 function Meta({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex items-baseline gap-2">

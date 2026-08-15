@@ -1,15 +1,4 @@
-/* ============================================================
-   SPECTRE.OS — content database
-   The "files" that live inside the operating system.
-   ============================================================ */
-
-export type ProjectStatus =
-  | "SHIPPED"
-  | "MAINTAINED"
-  | "WIP"
-  | "ARCHIVED"
-  | "LIVE";
-
+export type ProjectStatus = "SHIPPED" | "MAINTAINED" | "WIP" | "ARCHIVED" | "LIVE";
 export interface Project {
   id: string;
   name: string;
@@ -20,17 +9,18 @@ export interface Project {
   summary: string;
   stack: string[];
   highlights: string[];
-  metrics?: { label: string; value: string }[];
+  metrics?: {
+    label: string;
+    value: string;
+  }[];
   description: string;
 }
-
 export interface WorkFolder {
   id: string;
   name: string;
   glyph: string;
   blurb: string;
 }
-
 export const workFolders: WorkFolder[] = [
   { id: "minecraft", name: "Minecraft", glyph: "⛏", blurb: "Server software, plugins & packet engineering" },
   { id: "java", name: "Java", glyph: "☕", blurb: "Core systems, concurrency & JVM tooling" },
@@ -39,7 +29,6 @@ export const workFolders: WorkFolder[] = [
   { id: "archived", name: "Archived", glyph: "▣", blurb: "Old builds, kept for posterity" },
   { id: "github", name: "GitHub", glyph: "⑂", blurb: "Live-indexed from GitHub — topic: spectre-portfolio" },
 ];
-
 export const projects: Project[] = [
   {
     id: "packet-replay",
@@ -195,10 +184,7 @@ export const projects: Project[] = [
     status: "SHIPPED",
     summary: "A realtime server dashboard that updates 10× a second.",
     stack: ["TypeScript", "React", "WebSockets", "Canvas"],
-    highlights: [
-      "Canvas-rendered sparklines at 60fps.",
-      "WebSocket stream with backpressure-aware batching.",
-    ],
+    highlights: ["Canvas-rendered sparklines at 60fps.", "WebSocket stream with backpressure-aware batching."],
     metrics: [
       { label: "REFRESH", value: "10Hz" },
       { label: "FPS", value: "60" },
@@ -215,10 +201,7 @@ export const projects: Project[] = [
     status: "WIP",
     summary: "Live GLSL editor that renders as you type.",
     stack: ["TypeScript", "WebGL", "Monaco"],
-    highlights: [
-      "Hot-reloading fragment shaders.",
-      "Error annotations straight from the compiler.",
-    ],
+    highlights: ["Hot-reloading fragment shaders.", "Error annotations straight from the compiler."],
     description:
       "A tiny ShaderToy clone. Mostly built so I could learn the maths behind signed-distance fields. Currently 'WIP' which is developer for 'I'll finish it on a rainy weekend that never comes.'",
   },
@@ -231,10 +214,7 @@ export const projects: Project[] = [
     status: "WIP",
     summary: "Routes prompts to the cheapest LLM that can still answer them.",
     stack: ["TypeScript", "Node", "Edge"],
-    highlights: [
-      "Tiny classifier decides model tier per request.",
-      "Cut a side-project's API bill by ~70%.",
-    ],
+    highlights: ["Tiny classifier decides model tier per request.", "Cut a side-project's API bill by ~70%."],
     description:
       "CheapRouter is a greedy little proxy. It classifies how hard your prompt is and sends it to the cheapest model that probably won't embarrass itself. It is 70% savings and 30% existential dread.",
   },
@@ -247,10 +227,7 @@ export const projects: Project[] = [
     status: "ARCHIVED",
     summary: "My first plugin. An economy system. It was... a lot.",
     stack: ["Java", "Bukkit", "MySQL"],
-    highlights: [
-      "Written before I knew what 'normalisation' meant.",
-      "Somehow still ran in production for two years.",
-    ],
+    highlights: ["Written before I knew what 'normalisation' meant.", "Somehow still ran in production for two years."],
     description:
       "The code is unspeakable. God classes, raw SQL concatenated from user input, a giant switch statement that ruled them all. I keep it here as a humbling monument to how far I've come — and a warning to never stop refactoring.",
   },
@@ -268,38 +245,122 @@ export const projects: Project[] = [
       "A clean, responsive, professionally boring portfolio. It listed my skills with progress bars (lies), showed three projects, and vanished from memory within seconds of being closed. SPECTRE.OS is its revenge.",
   },
 ];
-
 export const projectById = (id: string) => projects.find((p) => p.id === id);
-
-/* ============================================================
-   BRAIN — skills knowledge graph
-   ============================================================ */
-
 export interface Skill {
   id: string;
   label: string;
   group: "core" | "jvm" | "web" | "infra";
-  level: number; // 0-100
+  level: number;
   years: number;
   blurb: string;
 }
-
 export const skills: Skill[] = [
-  { id: "java", label: "JAVA", group: "core", level: 95, years: 8, blurb: "My mother tongue. Spent a decade in the JVM — concurrency, bytecode, GC tuning, and the occasional screaming match with the classloader." },
-  { id: "ts", label: "TYPESCRIPT", group: "core", level: 88, years: 6, blurb: "What I reach for when Java feels heavy. Types are a design tool, not just a safety net." },
-  { id: "paper", label: "PAPER", group: "jvm", level: 92, years: 7, blurb: "The Minecraft server platform. I know its scheduler, its region threads, and its opinions, intimately." },
-  { id: "protocollib", label: "PROTOCOLLIB", group: "jvm", level: 90, years: 6, blurb: "Packet interception. Where the real magic — and the real bugs — live." },
-  { id: "maven", label: "MAVEN", group: "jvm", level: 80, years: 8, blurb: "Builds, dependency graphs, multi-module repos. Yes I've read the POM reference. No, I'm not proud." },
-  { id: "spigot", label: "SPIGOT", group: "jvm", level: 85, years: 9, blurb: "The older API. Still alive in a thousand servers, and still in my muscle memory." },
-  { id: "react", label: "REACT", group: "web", level: 86, years: 5, blurb: "Hooks, suspense, the occasional context-induced headache. This whole OS is built on it." },
-  { id: "node", label: "NODE", group: "web", level: 82, years: 5, blurb: "Backends, CLIs, edge functions. Event loop gymnastics included." },
-  { id: "tailwind", label: "TAILWIND", group: "web", level: 84, years: 4, blurb: "Design system as syntax. I am a willing convert." },
-  { id: "docker", label: "DOCKER", group: "infra", level: 78, years: 5, blurb: "If it runs on my machine, it runs in a container. Repeat after me." },
-  { id: "linux", label: "LINUX", group: "infra", level: 83, years: 8, blurb: "My daily driver. I write bash like some people write poetry — badly, but with feeling." },
-  { id: "git", label: "GIT", group: "infra", level: 90, years: 9, blurb: "Rebases, reflogs, the occasional cherry-pick from the ninth circle. I've dug myself out of every hole." },
-  { id: "sql", label: "SQL", group: "infra", level: 76, years: 7, blurb: "Indexes, EXPLAIN plans, and the eternal fight against N+1 queries." },
+  {
+    id: "java",
+    label: "JAVA",
+    group: "core",
+    level: 95,
+    years: 8,
+    blurb:
+      "My mother tongue. Spent a decade in the JVM — concurrency, bytecode, GC tuning, and the occasional screaming match with the classloader.",
+  },
+  {
+    id: "ts",
+    label: "TYPESCRIPT",
+    group: "core",
+    level: 88,
+    years: 6,
+    blurb: "What I reach for when Java feels heavy. Types are a design tool, not just a safety net.",
+  },
+  {
+    id: "paper",
+    label: "PAPER",
+    group: "jvm",
+    level: 92,
+    years: 7,
+    blurb: "The Minecraft server platform. I know its scheduler, its region threads, and its opinions, intimately.",
+  },
+  {
+    id: "protocollib",
+    label: "PROTOCOLLIB",
+    group: "jvm",
+    level: 90,
+    years: 6,
+    blurb: "Packet interception. Where the real magic — and the real bugs — live.",
+  },
+  {
+    id: "maven",
+    label: "MAVEN",
+    group: "jvm",
+    level: 80,
+    years: 8,
+    blurb: "Builds, dependency graphs, multi-module repos. Yes I've read the POM reference. No, I'm not proud.",
+  },
+  {
+    id: "spigot",
+    label: "SPIGOT",
+    group: "jvm",
+    level: 85,
+    years: 9,
+    blurb: "The older API. Still alive in a thousand servers, and still in my muscle memory.",
+  },
+  {
+    id: "react",
+    label: "REACT",
+    group: "web",
+    level: 86,
+    years: 5,
+    blurb: "Hooks, suspense, the occasional context-induced headache. This whole OS is built on it.",
+  },
+  {
+    id: "node",
+    label: "NODE",
+    group: "web",
+    level: 82,
+    years: 5,
+    blurb: "Backends, CLIs, edge functions. Event loop gymnastics included.",
+  },
+  {
+    id: "tailwind",
+    label: "TAILWIND",
+    group: "web",
+    level: 84,
+    years: 4,
+    blurb: "Design system as syntax. I am a willing convert.",
+  },
+  {
+    id: "docker",
+    label: "DOCKER",
+    group: "infra",
+    level: 78,
+    years: 5,
+    blurb: "If it runs on my machine, it runs in a container. Repeat after me.",
+  },
+  {
+    id: "linux",
+    label: "LINUX",
+    group: "infra",
+    level: 83,
+    years: 8,
+    blurb: "My daily driver. I write bash like some people write poetry — badly, but with feeling.",
+  },
+  {
+    id: "git",
+    label: "GIT",
+    group: "infra",
+    level: 90,
+    years: 9,
+    blurb: "Rebases, reflogs, the occasional cherry-pick from the ninth circle. I've dug myself out of every hole.",
+  },
+  {
+    id: "sql",
+    label: "SQL",
+    group: "infra",
+    level: 76,
+    years: 7,
+    blurb: "Indexes, EXPLAIN plans, and the eternal fight against N+1 queries.",
+  },
 ];
-
 export const skillEdges: [string, string][] = [
   ["java", "paper"],
   ["paper", "spigot"],
@@ -318,11 +379,6 @@ export const skillEdges: [string, string][] = [
   ["node", "sql"],
   ["java", "ts"],
 ];
-
-/* ============================================================
-   LAB — experiments
-   ============================================================ */
-
 export interface Experiment {
   id: string;
   codename: string;
@@ -331,7 +387,6 @@ export interface Experiment {
   desc: string;
   classified?: boolean;
 }
-
 export const experiments: Experiment[] = [
   {
     id: "exp-17",
@@ -370,8 +425,6 @@ export const experiments: Experiment[] = [
     classified: true,
   },
 ];
-
-/* The classified secret (revealed after enough clicks) */
 export const classifiedSecret = {
   title: "CLASSIFICATION LIFTED",
   lines: [
@@ -385,11 +438,6 @@ export const classifiedSecret = {
     "> sudo hire-spectre",
   ],
 };
-
-/* ============================================================
-   NOTES — the developer notebook
-   ============================================================ */
-
 export interface Note {
   id: string;
   title: string;
@@ -397,7 +445,6 @@ export interface Note {
   body: string;
   tags: string[];
 }
-
 export const notes: Note[] = [
   {
     id: "nms",
@@ -469,24 +516,20 @@ At 3am your brain insists it's a race condition in the network layer. At 9am, so
 Sleep is a debugging tool. The rubber duck is a debugging tool. Walking away is a debugging tool. Staring harder at the screen is almost never the debugging tool. I keep relearning this. Every. Single. Week.`,
   },
 ];
-
-/* ============================================================
-   SYSTEM
-   ============================================================ */
-
-export const systemInfo: { k: string; v: string }[] = [
+export const systemInfo: {
+  k: string;
+  v: string;
+}[] = [
   { k: "OS", v: "SPECTRE.OS" },
-  { k: "VERSION", v: "v3.7 (stable)" },
+  { k: "VERSION", v: "v1.3 (stable)" },
   { k: "KERNEL", v: "HUMAN-1.0" },
   { k: "PRIMARY LANG", v: "JAVA" },
   { k: "SECONDARY", v: "TYPESCRIPT" },
   { k: "SHELL", v: "/bin/zsh" },
   { k: "ENGINE", v: "CAFFEINE" },
-  { k: "UPTIME", v: "~18 YEARS" },
   { k: "LOCATION", v: "IND / REMOTE" },
   { k: "BUGS", v: "UNKNOWN (FEATURING)" },
 ];
-
 export const knownIssues: string[] = [
   "Sleeps irregularly",
   "Refuses to stop debugging",
@@ -496,12 +539,11 @@ export const knownIssues: string[] = [
   "caffeine.dll: dependency not found (retries forever)",
   "Will refactor your variable names given the chance",
 ];
-
-/* ============================================================
-   Random system notifications
-   ============================================================ */
-
-export const notifications: { title: string; body: string; tone?: "info" | "warn" | "accent" }[] = [
+export const notifications: {
+  title: string;
+  body: string;
+  tone?: "info" | "warn" | "accent";
+}[] = [
   { title: "SPECTRE.OS", body: "New project detected." },
   { title: "SYSTEM", body: "Autosave complete. 0 files changed.", tone: "info" },
   { title: "WARNING", body: "You've been here a while. That's probably a good sign.", tone: "warn" },
@@ -509,14 +551,12 @@ export const notifications: { title: string; body: string; tone?: "info" | "warn
   { title: "SYSTEM", body: "Memory leak in [motivation.dll] patched.", tone: "info" },
   { title: "SPECTRE.OS", body: "A wild recruiter appeared!", tone: "accent" },
   { title: "KERNEL", body: "Rubber duck engaged. Bug resolve imminent.", tone: "info" },
-  { title: "SYSTEM", body: "Uptime: impressive. Bug count: uncertain.", tone: "accent" },
 ];
-
-/* ============================================================
-   Socials / contact
-   ============================================================ */
-
-export const socials: { label: string; handle: string; value: string }[] = [
+export const socials: {
+  label: string;
+  handle: string;
+  value: string;
+}[] = [
   { label: "EMAIL", handle: "mail", value: "hello@spectre.dev" },
   { label: "GITHUB", handle: "github", value: "github.com/deathspectre" },
   { label: "DISCORD", handle: "discord", value: "deathspectre#0001" },

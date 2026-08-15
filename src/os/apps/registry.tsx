@@ -10,7 +10,6 @@ import SystemApp from "./SystemApp";
 import ContactApp from "./ContactApp";
 import TerminalApp from "./TerminalApp";
 import AboutApp from "./AboutApp";
-
 export const APP_COMPONENTS: Record<string, ComponentType<AppProps>> = {
   work: WorkApp,
   project: ProjectApp,
@@ -23,7 +22,6 @@ export const APP_COMPONENTS: Record<string, ComponentType<AppProps>> = {
   terminal: TerminalApp,
   about: AboutApp,
 };
-
 export function renderApp(appId: string, props: AppProps) {
   const Comp = APP_COMPONENTS[appId];
   return Comp ? <Comp {...props} /> : null;

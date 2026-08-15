@@ -1,18 +1,14 @@
 import { PORTFOLIO_TOPIC, STATUS_TOPICS } from "./config";
 import { determineStatus } from "./projectStatus";
 import type { GithubProject, GithubRepo, SpectreConfig } from "./types";
-
 const HIDDEN_TOPICS = new Set<string>([PORTFOLIO_TOPIC, STATUS_TOPICS.wip, STATUS_TOPICS.completed]);
-
 export function mapRepoToProject(repo: GithubRepo, config: SpectreConfig | null): GithubProject {
   const status = determineStatus(repo, config?.status);
   const visibleTopics = (repo.topics ?? []).filter((t) => !HIDDEN_TOPICS.has(t));
-
   const technologies =
     config?.technologies && config.technologies.length > 0
       ? config.technologies
       : Array.from(new Set([repo.language, ...visibleTopics].filter(Boolean) as string[]));
-
   return {
     id: String(repo.id),
     repoName: repo.name,
