@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { notes } from "@/data/portfolio";
+import { changelog } from "@/data/portfolio";
 import { AppHeader, type AppProps } from "@/os/ui";
 import { cn } from "@/utils/cn";
 export default function NotesApp(_: AppProps) {
-  const [active, setActive] = useState(notes[0].id);
-  const note = notes.find((n) => n.id === active)!;
+  const [active, setActive] = useState(changelog[0].id);
+  const note = changelog.find((n) => n.id === active)!;
   return (
     <div className="flex h-full flex-col">
       <AppHeader
-        path="/HOME/SPECTRE/NOTES/devlog.md"
-        right={<span className="micro text-faint">{notes.length} entries</span>}
+        path="/HOME/SPECTRE/NOTES/CHANGELOG.md"
+        right={<span className="micro text-faint">{changelog.length} entries</span>}
       />
       <div className="flex min-h-0 flex-1">
         <aside className="w-[112px] shrink-0 overflow-auto border-r border-edge bg-panel/40 p-1.5 sm:w-52 sm:p-2 os-scroll">
-          <div className="micro mb-2 px-1 text-faint">DEVLOG</div>
+          <div className="micro mb-2 px-1 text-faint">CHANGELOG</div>
           <ul className="space-y-0.5">
-            {notes.map((n) => (
+            {changelog.map((n) => (
               <li key={n.id}>
                 <button
                   type="button"
@@ -60,7 +60,7 @@ export default function NotesApp(_: AppProps) {
               ))}
             </div>
             <div className="mt-8 border-t border-dashed border-edge pt-3 micro text-faint">
-              — end of entry · thoughts are not git-committed
+              — end of entry · this one's real
             </div>
           </div>
         </div>

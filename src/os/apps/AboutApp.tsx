@@ -26,7 +26,7 @@ export default function AboutApp(_: AppProps) {
             <span className="text-accent">▸ LAB</span> — experiments. one is classified.
           </li>
           <li>
-            <span className="text-accent">▸ NOTES</span> — how I actually think.
+            <span className="text-accent">▸ CHANGELOG</span> — what's actually shipped, as it ships.
           </li>
           <li>
             <span className="text-accent">▸ TERMINAL</span> — type <span className="text-ink">help</span>. try{" "}

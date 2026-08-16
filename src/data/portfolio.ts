@@ -262,7 +262,7 @@ export const skills: Skill[] = [
     level: 95,
     years: 8,
     blurb:
-      "My mother tongue. Spent a decade in the JVM — concurrency, bytecode, GC tuning, and the occasional screaming match with the classloader.",
+      "Mother tongue. A decade deep in the JVM — concurrency, bytecode, GC tuning, and long-running arguments with the classloader that I mostly win.",
   },
   {
     id: "ts",
@@ -270,7 +270,7 @@ export const skills: Skill[] = [
     group: "core",
     level: 88,
     years: 6,
-    blurb: "What I reach for when Java feels heavy. Types are a design tool, not just a safety net.",
+    blurb: "The escape hatch when Java gets ceremonious. I write types the way some people write tests — early, and a little defensively.",
   },
   {
     id: "paper",
@@ -310,7 +310,7 @@ export const skills: Skill[] = [
     group: "web",
     level: 86,
     years: 5,
-    blurb: "Hooks, suspense, the occasional context-induced headache. This whole OS is built on it.",
+    blurb: "Hooks, suspense, the occasional context-induced headache. This whole OS runs on it.",
   },
   {
     id: "node",
@@ -318,7 +318,7 @@ export const skills: Skill[] = [
     group: "web",
     level: 82,
     years: 5,
-    blurb: "Backends, CLIs, edge functions. Event loop gymnastics included.",
+    blurb: "Backends, CLIs, the odd edge function. I've made peace with the event loop — it still tests me occasionally.",
   },
   {
     id: "tailwind",
@@ -326,7 +326,7 @@ export const skills: Skill[] = [
     group: "web",
     level: 84,
     years: 4,
-    blurb: "Design system as syntax. I am a willing convert.",
+    blurb: "Design system as syntax. Skeptical at first, fully converted now.",
   },
   {
     id: "docker",
@@ -334,7 +334,7 @@ export const skills: Skill[] = [
     group: "infra",
     level: 78,
     years: 5,
-    blurb: "If it runs on my machine, it runs in a container. Repeat after me.",
+    blurb: "If it works locally, it ships in a container and takes the blame with it.",
   },
   {
     id: "linux",
@@ -358,7 +358,7 @@ export const skills: Skill[] = [
     group: "infra",
     level: 76,
     years: 7,
-    blurb: "Indexes, EXPLAIN plans, and the eternal fight against N+1 queries.",
+    blurb: "Indexes, execution plans, and a standing feud with anything that quietly does N+1 queries.",
   },
 ];
 export const skillEdges: [string, string][] = [
@@ -445,75 +445,46 @@ export interface Note {
   body: string;
   tags: string[];
 }
-export const notes: Note[] = [
+export const changelog: Note[] = [
   {
-    id: "nms",
-    title: "Why I stopped using NMS",
-    date: "2024.11.03",
-    tags: ["minecraft", "philosophy"],
-    body: `NMS (net.minecraft.server) is the siren song of the Minecraft developer. It's fast, it's powerful, and it is a cliff.
+    id: "honest-changelog",
+    title: "This tab used to be fake",
+    date: "2026.08.16",
+    tags: ["meta", "honesty"],
+    body: `This used to be a "devlog" full of invented entries — fake dates, a made-up story about a first plugin, opinions I never actually wrote down. It read fine, but none of it happened.
 
-Every version bump reobfuscates the names. Your meticulously crafted reflection hacks shatter overnight. You become a hostage to Mojang's build pipeline.
+So it's a changelog now. Real entries about real changes to this OS, added as they ship. Less personality-as-decoration, more "here's what actually got built and why."
 
-I switched to ProtocolLib and stable abstractions not because I couldn't handle NMS — I could — but because sleeping through an update is a feature. Good engineers reach for power. Great engineers reach for the right amount of it.`,
+If a claim shows up here, it's because it's true, not because it sounded good.`,
   },
   {
-    id: "first-plugin",
-    title: "What I learned building my first plugin",
-    date: "2016.07.21",
-    tags: ["origin", "minecraft"],
-    body: `My first plugin was an economy system. It was, charitably, a war crime against software.
+    id: "skill-blurbs",
+    title: "Rewrote the BRAIN skill descriptions",
+    date: "2026.08.16",
+    tags: ["copy", "polish"],
+    body: `Went through every node in the BRAIN skill graph and rewrote the weaker blurbs — TypeScript, Node, Tailwind, Docker, SQL. A few had drifted into stock lines ("types as a safety net," the "if it runs on my machine" joke) that could've been written about anyone.
 
-What I learned:
-1. A giant switch statement is not an architecture.
-2. String concatenation is not a query builder.
-3. "It works on my server" is not a test suite.
-
-But it ran. People used it. Someone even donated. That gap — between awful code and something people genuinely value — is the whole reason I'm still here.`,
+Kept the ones that already had a real voice — Java, ProtocolLib, Maven, Spigot, Linux, Git — untouched, and matched the new ones to that same dry, first-person tone so the graph doesn't feel stitched together.`,
   },
   {
-    id: "portfolios",
-    title: "Why most portfolio websites suck",
-    date: "2025.01.14",
-    tags: ["meta", "design"],
-    body: `Most portfolios are a CV wearing a CSS costume. Hero. Three cards. A skill bar that lies ("JavaScript 90%"). A contact form no one fills in.
+    id: "status-widget",
+    title: "Retired the fake quick-notes widget",
+    date: "2026.08.16",
+    tags: ["ui", "portfolio"],
+    body: `The desktop used to have a "Quick Notes" widget — a checklist with placeholder to-dos ("Build portfolio UI", "Work on plugins") and a + button that just appended more fake entries. It looked interactive but told a visitor nothing real.
 
-They are optimised to be skimmed, which means they are optimised to be forgotten.
+Replaced it with a status panel: an availability line, top skills pulled live from the actual BRAIN skill data, and a "sudo hire-spectre" button that opens Contact — reusing the phrase that was already the terminal's hire easter egg instead of a generic CTA.
 
-A portfolio should make you feel something in the first ten seconds. Curiosity. Delight. Mild confusion. Anything but the numb nod of recognition. Hence: this. An operating system. Because if you remember one portfolio this year, I want it to be the one you could literally close.`,
+Same footprint, same corner of the screen. It just does something now.`,
   },
   {
-    id: "learning",
-    title: "Things I'm currently learning",
-    date: "2025.02.28",
-    tags: ["now"],
-    body: `- Rust. I want to feel the borrow checker's cold, loving hand.
-- GPU compute & shaders — making pixels do maths is a different kind of joy.
-- Distributed systems theory. CAP, consensus, the horror of partial failure.
-- How to write documentation that future-me won't curse.
-- Drawing, badly. The brain needs hobbies that aren't keyboards.`,
-  },
-  {
-    id: "unbuilt",
-    title: "Ideas I haven't built yet",
-    date: "2025.03.10",
-    tags: ["ideas"],
-    body: `- A version-control system for LEGO builds.
-- An IDE plugin that gently shames you for naming things 'temp2'.
-- A keyboard where every key is a tiny e-ink screen. (Too expensive. Probably.)
-- A chat app that refuses to send messages written after 1am.
-- A website that is also an operating system. Wait.`,
-  },
-  {
-    id: "debugging",
-    title: "On debugging at 3am",
-    date: "2024.09.05",
-    tags: ["craft"],
-    body: `The bug is never where you think it is. That's the whole job.
+    id: "bg-layer",
+    title: "Configurable background layer",
+    date: "2026.08.16",
+    tags: ["feature", "engineering"],
+    body: `Added a background video/image layer behind the whole desktop, driven by a single URL in src/config/background.ts — swap that one string and every panel, the dock, and the windows adapt with no other code changes.
 
-At 3am your brain insists it's a race condition in the network layer. At 9am, sober, you find a typo in a config file.
-
-Sleep is a debugging tool. The rubber duck is a debugging tool. Walking away is a debugging tool. Staring harder at the screen is almost never the debugging tool. I keep relearning this. Every. Single. Week.`,
+The tricky part wasn't the video, it was making the rest of the UI hold up under it. This project builds to one inlined HTML file, so a bundled video would either bloat that file or bloat the repo — the config takes an external link instead so it stays decoupled from the build. On top of the footage: a darkening scrim, grain, and stronger backdrop-blur on every glass panel, so text stays legible no matter what's playing behind it. Also respects prefers-reduced-motion — the video is skipped entirely for anyone who's asked for less motion.`,
   },
 ];
 export const systemInfo: {

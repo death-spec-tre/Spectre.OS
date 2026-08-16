@@ -3,26 +3,24 @@ import { useOS } from "./OSContext";
 import { APP_META } from "./apps/meta";
 import { SPECTRE_TERMINAL_ART } from "@/data/spectreLogo";
 import { SPECTRE_LOGO_IMAGE } from "@/data/spectreLogoImage";
+import { skills } from "@/data/portfolio";
 import { cn } from "@/utils/cn";
 const MODULES = [
   { id: "work", label: "WORK", icon: <FolderIcon /> },
   { id: "brain", label: "BRAIN", icon: <BrainIcon /> },
   { id: "lab", label: "LAB", icon: <FlaskIcon /> },
-  { id: "notes", label: "NOTES", icon: <DocIcon /> },
+  { id: "notes", label: "CHANGELOG", icon: <DocIcon /> },
   { id: "system", label: "SYSTEM", icon: <GearIcon /> },
   { id: "contact", label: "CONTACT", icon: <ContactIcon /> },
   { id: "terminal", label: "TERMINAL", icon: <TerminalIcon /> },
   { id: "about", label: "README.txt", icon: <ReadmeIcon /> },
 ] as const;
-const DEFAULT_NOTES = ["Build portfolio UI", "Work on plugins", "Learn system design", "Read more"];
 export default function SystemShell() {
   const os = useOS();
   const [now, setNow] = useState(new Date());
   const [cpu, setCpu] = useState(9);
   const [ram, setRam] = useState(77);
   const [focus, setFocus] = useState<string>("work");
-  const [checks, setChecks] = useState<boolean[]>([false, true, false, false]);
-  const [notes, setNotes] = useState<string[]>(DEFAULT_NOTES);
   const [showTerminal, setShowTerminal] = useState(true);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -209,17 +207,7 @@ export default function SystemShell() {
           </button>
         )}
 
-        <QuickNotes
-          notes={notes}
-          checks={checks}
-          toggle={(idx) => setChecks((prev) => prev.map((v, i) => (i === idx ? !v : v)))}
-          add={() => {
-            const next = `Idea_${String(notes.length + 1).padStart(2, "0")}`;
-            setNotes((prev) => [...prev, next]);
-            setChecks((prev) => [...prev, false]);
-            os.notify("QUICK NOTES", `${next} added to buffer.`, "info");
-          }}
-        />
+        <StatusWidget onContact={() => openModule("contact")} />
 
         <nav className="shell-dock pointer-events-auto absolute inset-x-0 bottom-0 z-10 flex flex-col md:hidden">
           <div className="os-scroll flex items-center gap-4 overflow-x-auto px-4 pb-2 pt-2.5">
@@ -515,51 +503,37 @@ function TerminalPreview({ openTerminal, hide }: { openTerminal: () => void; hid
     </section>
   );
 }
-function QuickNotes({
-  notes,
-  checks,
-  toggle,
-  add,
-}: {
-  notes: string[];
-  checks: boolean[];
-  toggle: (idx: number) => void;
-  add: () => void;
-}) {
+function StatusWidget({ onContact }: { onContact: () => void }) {
+  const topSkills = useMemo(() => [...skills].sort((a, b) => b.level - a.level).slice(0, 4), []);
   return (
     <section className="shell-widget-clip pointer-events-auto absolute bottom-[92px] right-4 z-10 hidden w-[236px] bg-black/40 xl:block">
       <div className="shell-widget-head flex h-9 items-center px-3">
-        <span className="mr-2 text-[12px] text-ink">▤</span>
-        <span className="font-mono text-[10.5px] tracking-[0.14em] text-ink">QUICK NOTES</span>
-        <button
-          type="button"
-          onClick={add}
-          title="Add note"
-          className="no-tap ml-auto text-[18px] leading-none text-ink transition-colors hover:text-white"
-        >
-          +
-        </button>
+        <span className="mr-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent pulse-dot" />
+        <span className="font-mono text-[10.5px] tracking-[0.14em] text-ink">OPEN TO WORK</span>
       </div>
 
-      <div className="os-scroll max-h-[152px] space-y-2 overflow-auto px-4 py-3 font-mono text-[11px]">
-        {notes.map((item, idx) => (
-          <button
-            key={`${item}-${idx}`}
-            type="button"
-            onClick={() => toggle(idx)}
-            className="no-tap flex w-full items-center gap-3 text-left text-muted transition-colors hover:text-ink"
-          >
+      <div className="space-y-3 px-4 py-3">
+        <p className="tiny text-muted">Freelance & full-time. Remote-first.</p>
+
+        <div className="flex flex-wrap gap-1.5">
+          {topSkills.map((s) => (
             <span
-              className={cn(
-                "flex h-3.5 w-3.5 shrink-0 items-center justify-center border text-[9px]",
-                checks[idx] ? "border-ink text-ink" : "border-edge3 text-transparent",
-              )}
+              key={s.id}
+              className="border border-edge2 px-1.5 py-0.5 font-mono text-[9.5px] tracking-[0.08em] text-faint"
             >
-              ✓
+              {s.label}
             </span>
-            <span className={cn("truncate", checks[idx] && "text-ink/70 line-through")}>{item}</span>
-          </button>
-        ))}
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={onContact}
+          className="no-tap flex w-full items-center justify-between border border-edge2 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.12em] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+        >
+          <span>sudo hire-spectre</span>
+          <span>→</span>
+        </button>
       </div>
     </section>
   );

@@ -107,7 +107,7 @@ export default function TerminalApp(_: AppProps) {
         text: "Builds plugins, packet tools, and operating systems that are secretly portfolios.",
         tone: "dim",
       });
-      push({ kind: "text", text: "→ open NOTES to see how I think. open WORK for proof.", tone: "dim" });
+      push({ kind: "text", text: "→ open CHANGELOG to see what's actually shipped. open WORK for proof.", tone: "dim" });
       return;
     }
     const opener: Record<string, string> = {

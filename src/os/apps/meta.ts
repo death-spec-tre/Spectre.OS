@@ -11,7 +11,7 @@ export const APP_META: Record<string, AppMeta> = {
   work: { appId: "work", title: "WORK", glyph: "📁", w: 760, h: 500, singleton: true, resizable: true },
   brain: { appId: "brain", title: "BRAIN", glyph: "🧠", w: 860, h: 580, singleton: true, resizable: true },
   lab: { appId: "lab", title: "LAB", glyph: "🧪", w: 740, h: 540, singleton: true, resizable: true },
-  notes: { appId: "notes", title: "NOTES", glyph: "📓", w: 720, h: 540, singleton: true, resizable: true },
+  notes: { appId: "notes", title: "CHANGELOG", glyph: "📓", w: 720, h: 540, singleton: true, resizable: true },
   system: { appId: "system", title: "SYSTEM", glyph: "⚙", w: 680, h: 540, singleton: true, resizable: true },
   contact: { appId: "contact", title: "CONTACT", glyph: "📡", w: 640, h: 540, singleton: true, resizable: true },
   terminal: { appId: "terminal", title: "TERMINAL", glyph: "▣", w: 720, h: 460, singleton: true, resizable: true },
